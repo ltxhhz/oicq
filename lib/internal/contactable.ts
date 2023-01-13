@@ -466,7 +466,7 @@ export abstract class Contactable {
 					}
 				}
 			}
-			const maker = new Converter(fake.message, { dm: this.dm, cachedir: null })
+			const maker = new Converter(fake.message, { dm: this.dm, cachedir: undefined })
 			if (maker?.brief && brief) {
 				maker.brief = brief
 			}

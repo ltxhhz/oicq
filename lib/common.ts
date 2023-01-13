@@ -156,6 +156,7 @@ export enum OnlineStatus {
 	Busy = 50,
 	Qme = 60,
 	DontDisturb = 70,
+	None = 0,
 }
 
 export * from "./core/constants"
