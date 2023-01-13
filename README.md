@@ -1,5 +1,7 @@
 # oicq
 
+> **fork 来自己用的**
+
 [![npm version](https://img.shields.io/npm/v/oicq/latest.svg)](https://www.npmjs.com/package/oicq)
 [![dm](https://shields.io/npm/dm/oicq)](https://www.npmjs.com/package/oicq)
 [![node engine](https://img.shields.io/node/v/oicq/latest.svg)](https://nodejs.org)
