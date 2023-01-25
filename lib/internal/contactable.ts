@@ -2,7 +2,10 @@ import fs from "fs"
 import path from "path"
 import querystring from "querystring"
 import axios from "axios"
+import iconv from "iconv-lite"
+import isUTF8 from "utf-8-validate"
 import { Readable } from "stream"
+import silkSDK from 'silk-sdk'
 import { randomBytes } from "crypto"
 import { exec } from "child_process"
 import { tea, pb, ApiRejection } from "../core"
@@ -329,7 +332,7 @@ export abstract class Contactable {
 				10: this.c.apk.version,
 				12: 1,
 				13: 1,
-				14: codec,
+				14: 0,
 				15: 1,
 			},
 		})
@@ -674,12 +677,11 @@ async function getPttBuffer(file: string | Buffer, ffmpeg = "ffmpeg"): Promise<B
 function audioTrans(file: string, ffmpeg = "ffmpeg"): Promise<Buffer> {
 	return new Promise((resolve, reject) => {
 		const tmpfile = path.join(TMP_DIR, uuid())
-		exec(`${ffmpeg} -y -i "${file}" -ac 1 -ar 8000 -f amr "${tmpfile}"`, async (error, stdout, stderr) => {
+		exec(`${ffmpeg} -i "${file}" -f s16le -ac 1 -ar 24000 "${tmpfile}"`, { encoding: 'buffer' }, async (error, stdout, stderr) => {
 			try {
-				const amr = await fs.promises.readFile(tmpfile)
-				resolve(amr)
+				resolve(silkSDK.encode(tmpfile, { tencent: true }))
 			} catch {
-				reject(new ApiRejection(ErrorCode.FFmpegPttTransError, "音频转码到amr失败，请确认你的ffmpeg可以处理此转换"))
+				reject(new ApiRejection(ErrorCode.FFmpegPttTransError, "音频转码到pcm失败，请确认你的ffmpeg可以处理此转换\n" + (isUTF8(stderr) ? stderr : iconv.decode(stderr, 'cp936'))))
 			} finally {
 				fs.unlink(tmpfile, NOOP)
 			}
